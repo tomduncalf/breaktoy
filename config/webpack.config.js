@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
+var WebpackNotifierPlugin = require('webpack-notifier');
 
 module.exports = {
   devtool: 'eval',
@@ -24,6 +25,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new WebpackNotifierPlugin(),
   ]
 };

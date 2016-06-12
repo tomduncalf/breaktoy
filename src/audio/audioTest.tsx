@@ -26,9 +26,9 @@ function getData(): void {
   request.responseType = 'arraybuffer'
 
   request.onload = function(): any {
-    const audioData = request.response
+    const audioData: ArrayBuffer = request.response
 
-    audioCtx.decodeAudioData(audioData).then(function(buffer: AudioBuffer): void {
+    audioCtx.decodeAudioData(audioData).then((buffer) => {
       // dilla.setTempo(buffer.duration * 1000 / 4 * 60)
 
       source.buffer = buffer
@@ -48,7 +48,7 @@ function getData(): void {
       /*setInterval(function() {
         //delay.delayTime.value = delay.delayTime.value ? 0 : 0.5
         delayGain.gain.value = delayGain.gain.value ? 0 : 1
-        sourceGain.gain.value = sourceGain.gain.value ? 1 : 0
+        sourceGain.gain.value = sourceGain.gain.value ? 1 : 0x
       }, buffer.duration * 1000 / 8)*/
 
       source.loop = true
