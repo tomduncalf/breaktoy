@@ -1,0 +1,17 @@
+{
+  "name": "BreakToy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ts-loader": "0.8.2",
+    "typescript": "1.8.10",
+    "webpack": "1.13.1"
+  }
+}
