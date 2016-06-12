@@ -4,14 +4,15 @@ import { StyleSheet, css } from 'aphrodite'
 const clamp = require('clamp')
 
 interface State {
-  x?: number
-  y?: number
   dragging?: boolean
   width?: number
   height?: number
 }
 
 interface Props {
+  onChange: (x: number, y: number) => void
+  x: number
+  y: number
 }
 
 const handleSize = 10
@@ -22,8 +23,6 @@ export default class XY extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      x: 0,
-      y: 0,
       width: 0,
       height: 0,
       dragging: false,
@@ -69,7 +68,8 @@ export default class XY extends React.Component<Props, State> {
     const x = clamp(e.pageX - rect.left, 0, width) / width
     const y = clamp(e.pageY - rect.top, 0, height) / height
 
-    this.setState({ x, y, width, height })
+    this.setState({ width, height })
+    this.props.onChange(x, y)
   }
 
   getRect() {
@@ -88,8 +88,8 @@ export default class XY extends React.Component<Props, State> {
         <div
           className={css(styles.handle)}
           style={{
-            left: (this.state.x * this.state.width) + 'px',
-            top: (this.state.y * this.state.height) + 'px'
+            left: (this.props.x * this.state.width) + 'px',
+            top: (this.props.y * this.state.height) + 'px'
           }}>
           </div>
       </div>

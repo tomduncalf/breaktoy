@@ -7,6 +7,8 @@ import XY from 'components/XY'
 interface State {
   ready?: boolean
   playing?: boolean
+  x?: number
+  y?: number
 }
 
 export default class BreakToy extends React.Component<{}, State> {
@@ -16,6 +18,8 @@ export default class BreakToy extends React.Component<{}, State> {
     this.state = {
       ready: false,
       playing: false,
+      x: 0,
+      y: 0,
     }
   }
 
@@ -37,6 +41,10 @@ export default class BreakToy extends React.Component<{}, State> {
     this.setState({ playing: true })
   }
 
+  handleXYChange = (x, y): void => {
+    this.setState({ x, y })
+  }
+
   render(): JSX.Element {
     const { ready, playing } = this.state
 
@@ -44,7 +52,7 @@ export default class BreakToy extends React.Component<{}, State> {
       <div>
         <h1>BreakToy</h1>
 
-        <XY />
+        <XY onChange={this.handleXYChange} x={this.state.x} y={this.state.y} />
 
         { ready && !playing && <a onClick={this.play.bind(this)}>Play</a>}
         { ready && playing && <a>Stop</a> }
