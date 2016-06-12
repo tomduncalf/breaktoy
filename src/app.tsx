@@ -1,7 +1,28 @@
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import { render } from 'react-dom'
+const { AppContainer } = require('react-hot-loader')
 
-ReactDOM.render(
-  <div>Hello world</div>,
-  document.getElementById('container')
+import App from 'containers/App'
+
+const rootEl = document.getElementById('container')
+
+render(
+  <AppContainer>
+    <App />
+  </AppContainer>,
+  rootEl
 )
+
+declare var module: any
+
+if (module.hot) {
+  module.hot.accept('./containers/App', () => {
+    const NextApp = require('./containers/App').default;
+    render(
+      <AppContainer>
+         <NextApp />
+      </AppContainer>,
+      rootEl
+    )
+  })
+}
