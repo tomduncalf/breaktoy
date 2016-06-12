@@ -26,6 +26,6 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new WebpackNotifierPlugin(),
+    new WebpackNotifierPlugin({ alwaysNotify: true }),
   ]
 };
