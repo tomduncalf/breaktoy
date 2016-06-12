@@ -7,6 +7,8 @@ interface State {
   x?: number
   y?: number
   dragging?: boolean
+  width?: number
+  height?: number
 }
 
 interface Props {
@@ -22,6 +24,8 @@ export default class XY extends React.Component<Props, State> {
     this.state = {
       x: 0,
       y: 0,
+      width: 0,
+      height: 0,
       dragging: false,
     }
   }
@@ -42,6 +46,14 @@ export default class XY extends React.Component<Props, State> {
     window.removeEventListener('mousemove', this.handleMouseMove)
   }
 
+  getWidth(rect) {
+    return rect.width - handleSize - borderWidth
+  }
+
+  getHeight(rect) {
+    return rect.height - handleSize - borderWidth
+  }
+
   handleMouseMove = (e) => {
     e.preventDefault()
 
@@ -50,10 +62,14 @@ export default class XY extends React.Component<Props, State> {
     }
 
     const rect = this.getRect()
-    const x = clamp(e.pageX - rect.left, 0, rect.width - handleSize - borderWidth)
-    const y = clamp(e.pageY - rect.top, 0, rect.height - handleSize - borderWidth)
 
-    this.setState({ x, y })
+    const width = this.getWidth(rect)
+    const height = this.getHeight(rect)
+
+    const x = clamp(e.pageX - rect.left, 0, width) / width
+    const y = clamp(e.pageY - rect.top, 0, height) / height
+
+    this.setState({ x, y, width, height })
   }
 
   getRect() {
@@ -65,12 +81,15 @@ export default class XY extends React.Component<Props, State> {
       <div
         className={css(styles.box)}
         onMouseDown={this.handleMouseDown}
+        style={{
+          cursor: this.state.dragging ? 'none' : 'auto'
+        }}
       >
         <div
           className={css(styles.handle)}
           style={{
-            left: (this.state.x) + 'px',
-            top: (this.state.y) + 'px'
+            left: (this.state.x * this.state.width) + 'px',
+            top: (this.state.y * this.state.height) + 'px'
           }}>
           </div>
       </div>
