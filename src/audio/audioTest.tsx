@@ -1,7 +1,6 @@
 const audioCtx = new AudioContext()
 
 let source
-// var dilla = new Dilla(audioCtx, {})
 
 function getData(): void {
   source = audioCtx.createBufferSource()
@@ -29,7 +28,7 @@ function getData(): void {
     const audioData: ArrayBuffer = request.response
 
     audioCtx.decodeAudioData(audioData).then((buffer) => {
-      // dilla.setTempo(buffer.duration * 1000 / 4 * 60)
+      const tempo = buffer.duration * 1000 / 4 * 60
 
       source.buffer = buffer
 
@@ -55,13 +54,6 @@ function getData(): void {
     })
 
   }
-
-  /*dilla.on('step', function (step) {
-    console.log('step')
-    if (step.event === 'start') {
-      source.start(0)
-    }
-  })*/
 
   request.send()
 }
