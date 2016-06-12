@@ -1,10 +1,12 @@
 module.exports = {
-  entry: '../src/app.ts',
+  entry: 'app.tsx',
   output: {
-    filename: 'bundle.js'
+    filename: 'dist/app.js'
   },
   resolve: {
-    extensions: ['', '.ts', '.tsx', '.js', '.jsx']
+    extensions: ['', '.ts', '.tsx', '.js', '.jsx'],
+    root: ['src'],
+    modulesDirectories: ['src', 'node_modules'],
   },
   module: {
     loaders: [
