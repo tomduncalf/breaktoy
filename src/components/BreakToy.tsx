@@ -2,6 +2,8 @@ import * as React from 'react'
 
 import { initAudio, loadAudio, addEvent, play } from 'audio/audioManager'
 
+import XY from 'components/XY'
+
 interface State {
   ready?: boolean
   playing?: boolean
@@ -41,6 +43,8 @@ export default class BreakToy extends React.Component<{}, State> {
     return (
       <div>
         <h1>BreakToy</h1>
+
+        <XY />
 
         { ready && !playing && <a onClick={this.play.bind(this)}>Play</a>}
         { ready && playing && <a>Stop</a> }
