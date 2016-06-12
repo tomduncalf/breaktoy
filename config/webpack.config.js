@@ -1,7 +1,18 @@
+var webpack = require('webpack');
+var path = require('path');
+
 module.exports = {
-  entry: 'app.tsx',
+  devtool: 'eval',
+  entry: [
+    'react-hot-loader/patch',
+    'webpack-dev-server/client?http://localhost:3000',
+    'webpack/hot/only-dev-server',
+    'app.tsx'
+  ],
   output: {
-    filename: 'dist/app.js'
+    filename: 'app.js',
+    publicPath: '/dist',
+    path: path.resolve('dist')
   },
   resolve: {
     extensions: ['', '.ts', '.tsx', '.js', '.jsx'],
@@ -9,7 +20,10 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.tsx?$/, loader: 'ts-loader' }
+      { test: /\.tsx?$/, loaders: ['babel', 'ts-loader'] }
     ]
-  }
-}
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ]
+};
