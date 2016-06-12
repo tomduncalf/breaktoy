@@ -3,7 +3,8 @@ import * as React from 'react'
 import { initAudio, loadAudio, addEvent, play } from 'audio/audioManager'
 
 interface State {
-  ready: boolean
+  ready?: boolean
+  playing?: boolean
 }
 
 export default class BreakToy extends React.Component<{}, State> {
@@ -12,37 +13,37 @@ export default class BreakToy extends React.Component<{}, State> {
 
     this.state = {
       ready: false,
+      playing: false,
     }
   }
 
   componentDidMount(): void {
     initAudio()
 
-    let lastTime = 0
-
-    const cb = (str) => {
-      const now = new Date().getTime()
-      console.log(`${str} ${now - lastTime}`)
-      lastTime = now
-    }
-
     loadAudio().then(() => {
-      for (let i = 0; i < 4; i++) {
-        addEvent(i, 1, cb.bind(null, i))
-      }
+      addEvent(2, 1, { type: 'delay', value: 1 })
+      addEvent(2.5, 1, { type: 'delay', value: 0 })
+      addEvent(4, 1, { type: 'delay', value: 1 })
+      addEvent(4.5, 1, { type: 'delay', value: 0 })
 
       this.setState({ ready: true })
     })
   }
 
+  play(): void {
+    play()
+    this.setState({ playing: true })
+  }
+
   render(): JSX.Element {
-    const { ready } = this.state
+    const { ready, playing } = this.state
 
     return (
       <div>
         <h1>BreakToy</h1>
 
-        { ready && <a onClick={play}>Play</a>}
+        { ready && !playing && <a onClick={this.play.bind(this)}>Play</a>}
+        { ready && playing && <a>Stop</a> }
       </div>
     )
   }
