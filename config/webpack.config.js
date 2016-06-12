@@ -5,7 +5,6 @@ module.exports = {
   },
   resolve: {
     extensions: ['', '.ts', '.tsx', '.js', '.jsx'],
-    root: ['src'],
     modulesDirectories: ['src', 'node_modules'],
   },
   module: {
