@@ -2,6 +2,7 @@
 type Beat = number
 type Tempo = number
 type TimeSecs = number
+type Decimal = number
 
 export type EffectType = 'delay'
 
@@ -18,7 +19,9 @@ interface TimedEvent {
 
 interface Event {
   type: EffectType
-  value: number
+  xValue: Decimal
+  yValue: Decimal
+  level?: Decimal
 }
 
 const WAAClock = require('waaclock')
@@ -111,9 +114,10 @@ function setupEvents(loopCount: number): void {
   for (let [key, event] of events) {
     clock.setTimeout(() => {
       const time = loopCount * meta.loopTime + event.time
-      delayInGain.gain.setValueAtTime(event.event.value, time)
-      delay.delayTime.setValueAtTime(Math.random() * 0.1, time)
-      feedback.gain.setValueAtTime((Math.random() * 0.4) + 0.5, time)
+      delayInGain.gain.setValueAtTime(event.event.level, time)
+      console.log(event.event)
+      delay.delayTime.setValueAtTime(0.0001 + (event.event.xValue * 0.1), time)
+      feedback.gain.setValueAtTime(event.event.yValue * 0.98, time)
     }, event.time)
   }
 }
@@ -129,12 +133,12 @@ export function addEvent(beat: Beat, length: Beat, event: Event): void {
 
   const offEvent = {
     time: getTimeAtBeat(meta.tempo, beat + length),
-    event: Object.assign({}, event, { value: 0 }),
+    event: Object.assign({}, event, { level: 0 }),
   }
 
   events.set(key, {
     time: getTimeAtBeat(meta.tempo, beat),
-    event,
+    event: Object.assign({}, event, { level: 1 }),
     linkedEvent: offEvent,
   })
 
@@ -143,4 +147,16 @@ export function addEvent(beat: Beat, length: Beat, event: Event): void {
 
 export function clearEvent(beat: Beat): void {
   events.delete(beat.toString())
+}
+
+export function updateEvent(beat: Beat, xValue: Decimal, yValue: Decimal): void {
+  const key = beat.toString()
+  const newEvent = Object.assign({}, events.get(key))
+
+  newEvent.event.xValue = xValue
+  newEvent.event.yValue = yValue
+
+  events.set(key, newEvent)
+
+  console.log(events)
 }

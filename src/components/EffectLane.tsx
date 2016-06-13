@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { StyleSheet, css } from 'aphrodite'
 
-import { addEvent, clearEvent, EffectType } from 'audio/audioManager'
+import { addEvent, clearEvent, updateEvent, EffectType } from 'audio/audioManager'
 
 import EffectStep from 'components/EffectStep'
 
 interface Props {
   steps: number
   name: string
-  type: string
+  type: EffectType
 }
 
 export default (props: Props) => (
@@ -17,8 +17,9 @@ export default (props: Props) => (
       <div className={css(styles.step)}>
         <EffectStep
           id={i}
-          onEnable={addStep.bind(this, i, props.type)}
-          onDisable={clearStep.bind(this, i, props.type)}
+          onEnable={addStep(i, props.type)}
+          onDisable={clearStep(i, props.type)}
+          onChange={updateStep(i, props.type)}
         />
       </div>
     )}
@@ -27,13 +28,20 @@ export default (props: Props) => (
 
 const idToBeat = (id: number): number => (id / 4) + 1
 
-const addStep = (id: number, type: EffectType): void => {
-  addEvent(idToBeat(id), 1, { type, value: 1.0 })
-}
+type StepFunction = (id: number, type: EffectType) => (x: number, y: number) => void
 
-const clearStep = (id: number, type: EffectType): void => {
+const addStep: StepFunction = (id, type) =>
+  (x, y) => {
+    addEvent(idToBeat(id), 1, { type, xValue: x, yValue: y })
+  }
+
+const clearStep = (id: number, type: EffectType): () => void => () =>
   clearEvent(idToBeat(id))
-}
+
+const updateStep: StepFunction = (id, type) =>
+  (x, y) => {
+    updateEvent(idToBeat(id), x, y)
+  }
 
 const styles = StyleSheet.create({
   stepContainer: {

@@ -5,8 +5,9 @@ import XY from 'components/XY'
 
 interface Props {
   id: number
-  onEnable: () => void
+  onEnable: (x: number, y: number) => void
   onDisable: () => void
+  onChange: (x: number, y: number) => void
 }
 
 interface State {
@@ -28,16 +29,19 @@ export default class BreakToy extends React.Component<Props, State> {
 
   handleXYChange = (x, y): void => {
     this.setState({ x, y })
+    this.props.onChange(x, y)
   }
 
   toggleEnabled = (): void => {
-    if (!this.state.enabled) {
-      this.props.onEnable()
+    const { x, y, enabled } = this.state
+
+    if (!enabled) {
+      this.props.onEnable(x, y)
     } else {
       this.props.onDisable()
     }
 
-    this.setState({ enabled: !this.state.enabled })
+    this.setState({ enabled: !enabled })
   }
 
   render(): JSX.Element {
