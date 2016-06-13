@@ -1,0 +1,3 @@
+Scheduling:
+https://github.com/sebpiq/WAAClock
+http://www.html5rocks.com/en/tutorials/audio/scheduling/
