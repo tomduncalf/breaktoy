@@ -52,7 +52,7 @@ export default class BreakToy extends React.Component<{}, State> {
       <div>
         <h1>BreakToy</h1>
 
-        <XY onChange={this.handleXYChange} x={this.state.x} y={this.state.y} />
+        <XY onChange={this.handleXYChange} x={this.state.x} y={this.state.y} handleColor='#f00' />
 
         { ready && !playing && <a onClick={this.play.bind(this)}>Play</a>}
         { ready && playing && <a>Stop</a> }
