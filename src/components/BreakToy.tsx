@@ -27,10 +27,10 @@ export default class BreakToy extends React.Component<{}, State> {
     initAudio()
 
     loadAudio().then(() => {
-      addEvent(2, 1, { type: 'delay', value: 1 })
+      /*addEvent(2, 1, { type: 'delay', value: 1 })
       addEvent(2.5, 1, { type: 'delay', value: 0 })
       addEvent(4, 1, { type: 'delay', value: 1 })
-      addEvent(4.5, 1, { type: 'delay', value: 0 })
+      addEvent(4.5, 1, { type: 'delay', value: 0 })*/
 
       this.setState({ ready: true })
     })

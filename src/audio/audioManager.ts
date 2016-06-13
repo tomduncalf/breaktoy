@@ -3,6 +3,8 @@ type Beat = number
 type Tempo = number
 type TimeSecs = number
 
+export type EffectType = 'delay'
+
 interface Meta {
   tempo: Tempo
   loopTime: TimeSecs
@@ -11,10 +13,11 @@ interface Meta {
 interface TimedEvent {
   time: TimeSecs
   event: Event
+  linkedEvent?: TimedEvent
 }
 
 interface Event {
-  type: 'delay'
+  type: EffectType
   value: number
 }
 
@@ -37,7 +40,7 @@ delayGain.gain.value = 1
 const feedback: GainNode = audioCtx.createGain()
 feedback.gain.value = 0.8
 
-let events: TimedEvent[] = []
+let events: Map<Symbol, TimedEvent> = new Map()
 let meta: Meta = null
 let ready = false
 
@@ -105,14 +108,14 @@ function setupClock(): void {
 }
 
 function setupEvents(loopCount: number): void {
-  events.forEach(event => {
+  for (let [key, event] of events) {
     clock.setTimeout(() => {
       const time = loopCount * meta.loopTime + event.time
       delayInGain.gain.setValueAtTime(event.event.value, time)
-      delay.delayTime.setValueAtTime(Math.random() * 0.15, time)
+      delay.delayTime.setValueAtTime(Math.random() * 0.1, time)
       feedback.gain.setValueAtTime((Math.random() * 0.4) + 0.5, time)
     }, event.time)
-  })
+  }
 }
 
 function getTimeAtBeat(tempo: Tempo, beat: Beat): TimeSecs {
@@ -121,8 +124,19 @@ function getTimeAtBeat(tempo: Tempo, beat: Beat): TimeSecs {
 }
 
 export function addEvent(beat: Beat, length: Beat, event: Event): void {
-  events.push({
+  const key = Symbol(beat)
+  const offKey = Symbol(beat + '_off')
+
+  const offEvent = {
+    time: getTimeAtBeat(meta.tempo, beat + length),
+    event: Object.assign({}, event, { value: 0 }),
+  }
+
+  events.set(key, {
     time: getTimeAtBeat(meta.tempo, beat),
     event,
+    linkedEvent: offEvent
   })
+
+  events.set(offKey, offEvent)
 }

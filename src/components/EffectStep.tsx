@@ -3,14 +3,19 @@ import { StyleSheet, css } from 'aphrodite'
 
 import XY from 'components/XY'
 
+interface Props {
+  id: number
+  onEnable: () => void
+}
+
 interface State {
   x?: number
   y?: number
   enabled?: boolean
 }
 
-export default class BreakToy extends React.Component<{}, State> {
-  constructor(props: {}) {
+export default class BreakToy extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -25,6 +30,10 @@ export default class BreakToy extends React.Component<{}, State> {
   }
 
   toggleEnabled = (): void => {
+    if (!this.state.enabled) {
+      this.props.onEnable()
+    }
+
     this.setState({ enabled: !this.state.enabled })
   }
 
@@ -50,11 +59,11 @@ export default class BreakToy extends React.Component<{}, State> {
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%'
+    height: '100%',
   },
   disabled: {
     width: '100%',
     height: '100%',
     backgroundColor: '#eee',
-  }
+  },
 })

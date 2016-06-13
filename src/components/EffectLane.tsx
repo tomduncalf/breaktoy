@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { StyleSheet, css } from 'aphrodite'
 
+import { addEvent, EffectType } from 'audio/audioManager'
+
 import EffectStep from 'components/EffectStep'
 
 interface Props {
@@ -13,11 +15,18 @@ export default (props: Props) => (
   <div className={css(styles.stepContainer)}>
     { Array.from(Array(props.steps).keys()).map(i =>
       <div className={css(styles.step)}>
-        <EffectStep />
+        <EffectStep
+          id={i}
+          onEnable={addStep.bind(this, i, props.type)}
+        />
       </div>
     )}
   </div>
 )
+
+const addStep = (id: number, type: EffectType): void => {
+  addEvent((id / 4) + 1, 1, { type, value: 1.0 })
+}
 
 const styles = StyleSheet.create({
   stepContainer: {
@@ -30,7 +39,7 @@ const styles = StyleSheet.create({
     border: '1px solid #ccc',
     borderRight: 0,
     ':last-child': {
-      borderRight: '1px solid #ccc'
-    }
-  }
+      borderRight: '1px solid #ccc',
+    },
+  },
 })
