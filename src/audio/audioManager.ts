@@ -40,7 +40,7 @@ delayGain.gain.value = 1
 const feedback: GainNode = audioCtx.createGain()
 feedback.gain.value = 0.8
 
-let events: Map<Symbol, TimedEvent> = new Map()
+let events: Map<string, TimedEvent> = new Map()
 let meta: Meta = null
 let ready = false
 
@@ -124,8 +124,8 @@ function getTimeAtBeat(tempo: Tempo, beat: Beat): TimeSecs {
 }
 
 export function addEvent(beat: Beat, length: Beat, event: Event): void {
-  const key = Symbol(beat)
-  const offKey = Symbol(beat + '_off')
+  const key = beat.toString()
+  const offKey = beat + '_off'
 
   const offEvent = {
     time: getTimeAtBeat(meta.tempo, beat + length),
@@ -135,8 +135,12 @@ export function addEvent(beat: Beat, length: Beat, event: Event): void {
   events.set(key, {
     time: getTimeAtBeat(meta.tempo, beat),
     event,
-    linkedEvent: offEvent
+    linkedEvent: offEvent,
   })
 
   events.set(offKey, offEvent)
+}
+
+export function clearEvent(beat: Beat): void {
+  events.delete(beat.toString())
 }

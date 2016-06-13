@@ -6,6 +6,7 @@ import XY from 'components/XY'
 interface Props {
   id: number
   onEnable: () => void
+  onDisable: () => void
 }
 
 interface State {
@@ -32,6 +33,8 @@ export default class BreakToy extends React.Component<Props, State> {
   toggleEnabled = (): void => {
     if (!this.state.enabled) {
       this.props.onEnable()
+    } else {
+      this.props.onDisable()
     }
 
     this.setState({ enabled: !this.state.enabled })
