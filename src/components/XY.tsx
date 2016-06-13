@@ -7,10 +7,12 @@ interface State {
   dragging?: boolean
   width?: number
   height?: number
+  mouseMoved?: boolean
 }
 
 interface Props {
   onChange: (x: number, y: number) => void
+  onClick?: () => void
   x: number
   y: number
   handleSize?: number
@@ -31,10 +33,22 @@ export default class XY extends React.Component<Props, State> {
     }
   }
 
+  // Should really call onResize
+  componentDidMount(): void {
+    setTimeout(() => {
+      const rect = this.getRect()
+
+      const width = this.getWidth(rect)
+      const height = this.getHeight(rect)
+
+      this.setState({ width, height })
+    }, 0)
+  }
+
   handleMouseDown = (e) => {
     e.preventDefault()
 
-    this.setState({ dragging: true })
+    this.setState({ dragging: true, mouseMoved: false })
 
     window.addEventListener('mouseup', this.handleMouseUp)
     window.addEventListener('mousemove', this.handleMouseMove)
@@ -42,6 +56,10 @@ export default class XY extends React.Component<Props, State> {
 
   handleMouseUp = () => {
     this.setState({ dragging: false })
+
+    if (!this.state.mouseMoved) {
+      this.props.onClick()
+    }
 
     window.removeEventListener('mouseup', this.handleMouseUp)
     window.removeEventListener('mousemove', this.handleMouseMove)
@@ -64,13 +82,12 @@ export default class XY extends React.Component<Props, State> {
 
     const rect = this.getRect()
 
-    const width = this.getWidth(rect)
-    const height = this.getHeight(rect)
+    const { width, height } = this.state
 
     const x = clamp(e.pageX - rect.left, 0, width) / width
     const y = clamp(e.pageY - rect.top, 0, height) / height
 
-    this.setState({ width, height })
+    this.setState({ mouseMoved: true })
     this.props.onChange(x, y)
   }
 
@@ -80,6 +97,8 @@ export default class XY extends React.Component<Props, State> {
 
   render(): JSX.Element {
     const styles = getStyles(this.props)
+    const { width, height } = this.state
+    const shouldRenderHandle = !!(width && height)
 
     return (
       <div
@@ -89,13 +108,15 @@ export default class XY extends React.Component<Props, State> {
           cursor: this.state.dragging ? 'none' : 'auto'
         }}
       >
-        <div
-          className={css(styles.handle)}
-          style={{
-            left: (this.props.x * this.state.width) + 'px',
-            top: (this.props.y * this.state.height) + 'px'
-          }}>
-          </div>
+        { shouldRenderHandle &&
+          <div
+            className={css(styles.handle) }
+            style={{
+              left: (this.props.x * width) + 'px',
+              top: (this.props.y * height) + 'px'
+            }}
+          ></div>
+        }
       </div>
     )
   }
@@ -103,9 +124,8 @@ export default class XY extends React.Component<Props, State> {
 
 const getStyles = (props: Props) => StyleSheet.create({
   box: {
-    width: '100px',
-    height: '100px',
-    border: borderWidth + 'px solid #ccc',
+    width: '100%',
+    height: '100%',
     position: 'relative',
   },
 
@@ -114,7 +134,7 @@ const getStyles = (props: Props) => StyleSheet.create({
     height: (props.handleSize || handleSize) + 'px',
     backgroundColor: props.handleColor || 'transparent',
     borderWidth: '2px',
-    borderStyle: 'solid'
+    borderStyle: 'solid',
     borderColor: props.handleColor || '#666',
     borderRadius: (props.handleSize || handleSize) + 'px',
     position: 'absolute',
