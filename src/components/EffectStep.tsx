@@ -16,7 +16,7 @@ interface State {
   enabled?: boolean
 }
 
-export default class BreakToy extends React.Component<Props, State> {
+export default class EffectStep extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
@@ -47,18 +47,14 @@ export default class BreakToy extends React.Component<Props, State> {
   render(): JSX.Element {
     return (
       <div className={css(styles.container)}>
-        { this.state.enabled ?
-          <XY
-            onChange={this.handleXYChange}
-            x={this.state.x}
-            y={this.state.y}
-            handleColor='#f00'
-            onClick={this.toggleEnabled}
-          />
-        :
-          <div className={css(styles.disabled)} onClick={this.toggleEnabled}>
-          </div>
-        }
+        <XY
+          onChange={this.handleXYChange}
+          x={this.state.x}
+          y={this.state.y}
+          handleColor='#f00'
+          onClick={this.toggleEnabled}
+          enabled={this.state.enabled}
+        />
       </div>
     )
   }

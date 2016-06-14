@@ -15,8 +15,9 @@ interface Props {
   onClick?: () => void
   x: number
   y: number
-  handleSize?: number
+  handleSize?:number
   handleColor?: string
+  enabled?: boolean
 }
 
 const handleSize = 10
@@ -47,11 +48,17 @@ export default class XY extends React.Component<Props, State> {
 
   handleMouseDown = (e) => {
     e.preventDefault()
+    e.persist()
 
-    this.setState({ dragging: true, mouseMoved: false })
+    this.setState({ dragging: true, mouseMoved: false }, () => {
+      window.addEventListener('mouseup', this.handleMouseUp)
+      window.addEventListener('mousemove', this.handleMouseMove)
 
-    window.addEventListener('mouseup', this.handleMouseUp)
-    window.addEventListener('mousemove', this.handleMouseMove)
+      // Set the initial position to where it was clicked when enabling
+      if (!this.props.enabled) {
+        this.setValuesFromEvent(e)
+      }
+    })
   }
 
   handleMouseUp = () => {
@@ -73,13 +80,7 @@ export default class XY extends React.Component<Props, State> {
     return rect.height - handleSize - borderWidth
   }
 
-  handleMouseMove = (e) => {
-    e.preventDefault()
-
-    if (!this.state.dragging) {
-      return
-    }
-
+  setValuesFromEvent(e: MouseEvent): void {
     const rect = this.getRect()
 
     const { width, height } = this.state
@@ -87,8 +88,23 @@ export default class XY extends React.Component<Props, State> {
     const x = clamp(e.pageX - rect.left, 0, width) / width
     const y = clamp(e.pageY - rect.top, 0, height) / height
 
-    this.setState({ mouseMoved: true })
     this.props.onChange(x, y)
+
+  }
+
+  handleMouseMove = (e) => {
+    e.preventDefault()
+
+    if (!this.state.dragging) {
+      return
+    }
+
+    if (!this.props.enabled) {
+      this.props.onClick()
+    }
+
+    this.setValuesFromEvent(e)
+    this.setState({ mouseMoved: true })
   }
 
   getRect() {
@@ -98,7 +114,7 @@ export default class XY extends React.Component<Props, State> {
   render(): JSX.Element {
     const styles = getStyles(this.props)
     const { width, height } = this.state
-    const shouldRenderHandle = !!(width && height)
+    const shouldRenderHandle = this.props.enabled && !!(width && height)
 
     return (
       <div
