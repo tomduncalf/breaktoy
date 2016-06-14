@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "es6",
     "moduleResolution": "node",
     "target": "es6",
     "noImplicitAny": false,
     "sourceMap": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "outDir": "ts-build",
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src",

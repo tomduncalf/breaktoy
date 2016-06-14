@@ -14,7 +14,7 @@ interface Props {
   events: ObservableMap<any>
 }
 
-const EffectLane = observer((props: Props) => {
+const EffectLane = (props: Props) => {
   console.log('render effectlane')
   return <div className={css(styles.stepContainer)}>
     { Array.from(Array(props.steps).keys()).map(i =>
@@ -29,9 +29,9 @@ const EffectLane = observer((props: Props) => {
     )}
     { props.events.size }
   </div>
-})
+}
 
-export default EffectLane
+export default observer(EffectLane)
 
 const idToBeat = (id: number): number => (id / 4) + 1
 
