@@ -1,6 +1,8 @@
 import * as React from 'react'
+import { observer } from 'mobx-react'
 
 import { initAudio, loadAudio, addEvent, play } from 'audio/audioManager'
+import EventStore from 'stores/EventStore'
 
 import EffectLane from 'components/EffectLane'
 
@@ -11,8 +13,13 @@ interface State {
   y?: number
 }
 
-export default class BreakToy extends React.Component<{}, State> {
-  constructor(props: {}) {
+interface Props {
+  eventStore: EventStore
+}
+
+@observer
+export default class BreakToy extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -47,12 +54,17 @@ export default class BreakToy extends React.Component<{}, State> {
 
   render(): JSX.Element {
     const { ready, playing } = this.state
+    console.log('render Breaktoy')
 
     return (
       <div>
         <h1>BreakToy</h1>
 
-        <EffectLane name='Delay' type='delay' steps={16} />
+        <EffectLane name='Delay' type='delay' steps={16} events={this.props.eventStore.events}/>
+
+        <a onClick={() => {
+          this.props.eventStore.events.set(Math.random().toString(), 'a')
+        }}>click</a>
 
         { ready && !playing && <a onClick={this.play.bind(this)}>Play</a>}
         { ready && playing && <a>Stop</a> }

@@ -1,5 +1,7 @@
 import * as React from 'react'
 import { StyleSheet, css } from 'aphrodite'
+import { ObservableMap } from 'mobx'
+import { observer } from 'mobx-react'
 
 import { addEvent, clearEvent, updateEvent, EffectType } from 'audio/audioManager'
 
@@ -9,10 +11,12 @@ interface Props {
   steps: number
   name: string
   type: EffectType
+  events: ObservableMap<any>
 }
 
-export default (props: Props) => (
-  <div className={css(styles.stepContainer)}>
+const EffectLane = observer((props: Props) => {
+  console.log('render effectlane')
+  return <div className={css(styles.stepContainer)}>
     { Array.from(Array(props.steps).keys()).map(i =>
       <div className={css(styles.step)}>
         <EffectStep
@@ -23,8 +27,11 @@ export default (props: Props) => (
         />
       </div>
     )}
+    { props.events.size }
   </div>
-)
+})
+
+export default EffectLane
 
 const idToBeat = (id: number): number => (id / 4) + 1
 

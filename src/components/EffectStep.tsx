@@ -55,6 +55,7 @@ export default class EffectStep extends React.Component<Props, State> {
           onClick={this.toggleEnabled}
           enabled={this.state.enabled}
         />
+        {/*this.state.x} {this.state.y*/}
       </div>
     )
   }

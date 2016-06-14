@@ -1,5 +1,8 @@
 import * as React from 'react'
 
 import BreakToy from 'components/BreakToy'
+import EventStore from 'stores/EventStore'
 
-export default () => <BreakToy />
+const eventStore = new EventStore()
+
+export default () => <BreakToy eventStore={eventStore} />

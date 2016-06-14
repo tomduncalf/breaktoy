@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "moduleResolution": "classic",
+    "moduleResolution": "node",
     "target": "es6",
     "noImplicitAny": false,
     "sourceMap": true,
     "jsx": "react",
     "outDir": "ts-build",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "src",
+    "experimentalDecorators": true
   },
   "exclude": [
     "node_modules"
