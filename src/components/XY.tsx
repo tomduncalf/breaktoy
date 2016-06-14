@@ -86,7 +86,7 @@ export default class XY extends React.Component<Props, State> {
     const { width, height } = this.state
 
     const x = clamp(e.pageX - rect.left, 0, width) / width
-    const y = clamp(e.pageY - rect.top, 0, height) / height
+    const y = 1 - (clamp(e.pageY - rect.top, 0, height) / height)
 
     this.props.onChange(x, y)
 
@@ -129,9 +129,10 @@ export default class XY extends React.Component<Props, State> {
             className={css(styles.handle) }
             style={{
               left: (this.props.x * width) + 'px',
-              top: (this.props.y * height) + 'px'
+              top: ((1 - this.props.y) * height) + 'px'
             }}
-          ></div>
+          >
+          </div>
         }
       </div>
     )
